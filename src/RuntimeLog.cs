@@ -4,12 +4,13 @@ using System.Collections;
 /// Runtime log.
 /// Author: ZiZi
 /// Birthday: 2015/7/23
+/// Last Update: 2015/8/6
 /// 
 /// To Use:
 /// 	attach this stuff on a camera with GUIlayer, and done.
 /// API:
-/// 	RuntimeLog.Log("blablabla")					Add a normal log
-///  	RuntimeLog.Error / Warning("blablabla")		Add a error / warning log	
+/// 	RuntimeLog.Log("blablabla")					Add a normal log（Use ShowInConsole = true to send msg to Console）
+///  	RuntimeLog.Error / Warning("blablabla")		Add a error / warning log（Use ShowInConsole = true to send msg to Console）
 /// 	RuntimeLog.Clear()							Clear all the logs in log stack.
 ///     messegeColor								Change color of the log
 /// 	MessegeBoxRect								The position of the log box.
@@ -40,7 +41,10 @@ public class RuntimeLog : MonoBehaviour {
 	/// Add a log to the runtime log.
 	/// </summary>
 	/// <param name="msg">log.</param>
-	static public void Log<T>( T msg ){
+	static public void Log<T>( T msg , bool showInConsole){
+		if (showInConsole) {
+			Debug.Log (msg);
+		}
 		// Add msg
 		// Every msg end with a '\n'
 		m_logStack += msg+"\n";
@@ -63,22 +67,42 @@ public class RuntimeLog : MonoBehaviour {
 		}
 	}
 
+	static public void Log<T>(T msg){
+		RuntimeLog.Log (msg, false);
+	}
+
 	/// <summary>
 	/// Add a warning log to the runtime log.
 	/// </summary>
 	/// <param name="msg">log.</param>
-	static public void WarningLog(string msg){
+	static public void WarningLog<T>(T msg){
 		m_logStack += "[Warning]: ";
 		RuntimeLog.Log (msg);
+	}
+
+	static public void WarningLog<T>(T msg, bool showInConsole){
+		m_logStack += "[Warning]: ";
+		RuntimeLog.Log (msg, false);
+		if (showInConsole) {
+			Debug.LogWarning(msg);
+		}
 	}
 
 	/// <summary>
 	/// Add a error log to the runtime log.
 	/// </summary>
 	/// <param name="msg">log.</param>
-	static public void ErrorLog(string msg){
+	static public void ErrorLog<T>(T msg){
 		m_logStack += "[ERROR]: ";
 		RuntimeLog.Log (msg);
+	}
+
+	static public void ErrorLog<T>(T msg, bool showInConsole){
+		m_logStack += "[ERROR]: ";
+		RuntimeLog.Log (msg, false);
+		if (showInConsole) {
+			Debug.LogError(msg);
+		}
 	}
 
 	/// <summary>
@@ -95,7 +119,7 @@ public class RuntimeLog : MonoBehaviour {
 	public Rect    LogBoxRect 				{get {return logBoxRect;} set {logBoxRect = value;}}
 	public bool    isDisplay = true;		// Display the log on screen?
 
-	void Start() {
+	public RuntimeLog(){
 		Initialize ();
 	}
 
@@ -118,6 +142,10 @@ public class RuntimeLog : MonoBehaviour {
 //		}
 //		if (Input.GetKeyUp (KeyCode.B)) {
 //			RuntimeLog.Log('\n');
+//		}
+//
+//		if (Input.GetKeyUp (KeyCode.C)) {
+//			RuntimeLog.Log("This messege show in both console and screen", true);
 //		}
 //	}
 
